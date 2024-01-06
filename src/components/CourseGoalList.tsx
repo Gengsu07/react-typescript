@@ -1,43 +1,32 @@
-import { useState } from "react";
+import { TCGoal } from "../App";
 import CourseGoal from "./CourseGoal";
+import InfoBox from "./InfoBox";
 
-type TCGoal = {
-  id: number;
-  title: string;
-  description: string;
-};
-const CourseGoalList = () => {
-  const [items, setItems] = useState<TCGoal[]>([]);
-
-  const handleAddGoal = () => {
-    setItems((prevGoals) => [
-      ...prevGoals,
-      {
-        id: Math.random(),
-        title: "Learn React + TS",
-        description: "Learn it in depth",
-      },
-    ]);
-  };
-  const handleDeleteGoal = (id: number) => {
-    setItems((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
-  };
-
+const CourseGoalList = ({
+  onDeleteGoal,
+  items,
+  maxItems,
+}: {
+  onDeleteGoal: (id: number) => void;
+  items: TCGoal[];
+  maxItems: number;
+}) => {
   return (
-    <main className="flex flex-col justify-start items-center gap-5">
-      <button
-        className=" bg-white rounded-lg px-2 py-2 "
-        onClick={handleAddGoal}
-      >
-        Add goal
-      </button>
+    <main className="flex flex-col justify-start items-center gap-5 w-full">
+      {items.length === 0 && (
+        <InfoBox mode="hint" text="Please add a goal first" />
+      )}
+      {items.length > maxItems && (
+        <InfoBox mode="warning" text="You have more than 2 goals" />
+      )}
+
       <div className="flex flex-wrap justify-around items-center gap-5 my-5 mx-5">
         {items.map((goal) => (
           <div
             key={goal.id}
             className="bg-slate-600 px-5 py-2 rounded-lg shadow-lg "
           >
-            <CourseGoal goals={goal} onDelete={handleDeleteGoal} />
+            <CourseGoal goals={goal} onDelete={onDeleteGoal} />
           </div>
         ))}
       </div>
